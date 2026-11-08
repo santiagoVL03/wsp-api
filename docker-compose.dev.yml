@@ -1,0 +1,36 @@
+services:
+  wsp-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: wsp-api
+    init: true
+    tty: true
+    # Corre con tu UID/GID (HOST_UID/HOST_GID en .env): lo que escriba queda
+    # tuyo. Usa 1000:1000 (el usuario node de la imagen).
+    user: '${HOST_UID:-1000}:${HOST_GID:-1000}'
+    # Carga PORT, OPENWA_SESSION_ID, OPENWA_API_KEY, DATABASE_PATH,
+    # BOT_PRUEBAS_K6_TRIGGER, PSEUDONIMO_TRIGGER, REQUESTY_* ...
+    env_file:
+      - .env
+    environment:
+      HOME: /tmp
+      # Dentro de la red el puerto es el del contenedor: no cambies esto por 3010.
+      PORT: 3004
+      # OpenWA por su nombre de servicio en openwa-network (localhost no sirve aqui).
+      OPENWA_URL: http://openwa:2785
+    ports:
+      - '3004:3004' # API desde el host (libera el 3004 si tienes algo local)
+      - '9229:9229' # inspector de Node para el attach de VS Code
+    volumes:
+      # Sin bind mount del codigo ni volumen interno: el codigo sale de la
+      # imagen y se compila al arrancar. Solo la BD SQLite se persiste fuera.
+      - ./.data:/app/.data
+    networks:
+      - openwa-network
+    restart: unless-stopped
+
+networks:
+  # Red creada por el compose de OpenWA (networks.default.name)
+  openwa-network:
+    external: true

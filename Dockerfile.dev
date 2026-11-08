@@ -1,0 +1,24 @@
+# Imagen de desarrollo: deps completas (incluye el CLI de Nest).
+FROM node:24-alpine
+
+WORKDIR /app
+
+# Dependencias primero, para reaprovechar la cache de capas.
+COPY package*.json ./
+RUN npm ci
+
+# El codigo viaja dentro de la imagen: el contenedor NO monta el proyecto y no
+# hay hot reload. Para ver cambios: `up -d --build`.
+COPY . .
+
+# El proceso corre con tu UID (user: en compose) y compila dist/ al arrancar,
+# asi que /app tiene que pertenecer a ese usuario.
+RUN chown -R node:node /app
+
+ENV NODE_ENV=development
+
+# 3004 = API | 9229 = inspector de Node (VS Code attach)
+EXPOSE 3004 9229
+
+# Compila una vez con tsc y arranca el proceso ya compilado.
+CMD ["npx", "nest", "start", "--debug=0.0.0.0:9229"]

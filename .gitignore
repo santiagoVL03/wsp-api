@@ -44,10 +44,14 @@ lerna-debug.log*
 .env.test.local
 .env.production.local
 .env.local
+.env.bak
 
 # temp directory
 .temp
 .tmp
+
+# datos temporales del bot (mensajes entrantes)
+/.data
 
 # Runtime data
 pids
