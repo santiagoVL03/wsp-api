@@ -30,7 +30,7 @@ export class WhatsappService {
     const chatId = message.chatId;
     const body = message.body;
 
-    if (!chatId || !body || message.fromMe || body.trim().length === 0) {
+    if (!chatId || !body || message.fromMe) {
       return;
     }
 
@@ -105,7 +105,12 @@ export class WhatsappService {
   private async saveOriginalMessage(
     payload: OpenwaWebhookPayload,
   ): Promise<IncomingMessage | null> {
-    this.logger.log(`Mensaje original: ${JSON.stringify(payload)}`);
+    // Solo metadatos: el contenido de los chats no se escribe en los logs.
+    const message = payload.data ?? payload;
+    this.logger.log(
+      `Mensaje original de ${message.chatId ?? 'chat desconocido'} ` +
+        `(id ${message.id ?? 'sin id'}, ${message.type ?? 'sin tipo'})`,
+    );
 
     try {
       const saved = await this.messages.saveFromWebhook(payload);

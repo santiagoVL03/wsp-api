@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { WhatsappModule } from '../whatsapp/whatsapp.module';
+import { SecurityModule } from '../security/security.module';
 import { AdminController } from './admin.controller';
 import { AdminService } from './admin.service';
 
@@ -9,7 +10,7 @@ import { AdminService } from './admin.service';
  * nuevo. Importa WhatsappModule solo para reutilizar el repository.
  */
 @Module({
-  imports: [WhatsappModule],
+  imports: [WhatsappModule, SecurityModule],
   controllers: [AdminController],
   providers: [AdminService],
 })

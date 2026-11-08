@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LlmModule } from '../llm/llm.module';
 import { RealtimeModule } from '../realtime/realtime.module';
+import { SecurityModule } from '../security/security.module';
 import { IncomingMessage } from './entities/incoming-message.entity';
 import { OpenwaService } from './openwa.service';
 import { IncomingMessagesRepository } from './repository/incoming-messages.repository';
@@ -14,6 +15,7 @@ import { WhatsappService } from './whatsapp.service';
     HttpModule,
     LlmModule,
     RealtimeModule,
+    SecurityModule,
     TypeOrmModule.forFeature([IncomingMessage]),
   ],
   controllers: [WhatsappController],
